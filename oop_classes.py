@@ -1,21 +1,13 @@
-class Student:
-    def __init__(self, name, surname, gender):
-        self.name = name
-        self.surname = surname
-        self.gender = gender
-        self.finished_courses = []
-        self.courses_in_progress = []
-        self.grades = {}
-
-    def add_courses(self, course_name):
-        self.finished_course.append(course_name)   
-    
 class Mentor:
     def __init__(self, name, surname):
         self.name = name
         self.surname = surname
         self.courses_attached = []
         
+class Lecturer(Mentor):
+    lecturergrades = {}
+        
+class Reviewer(Mentor):
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
             if course in student.grades:
@@ -24,12 +16,27 @@ class Mentor:
                 student.grades[course] = [grade]
         else:
             return 'Ошибка'
+class Student:
+    def __init__(self, name, surname, gender):
+        self.name = name
+        self.surname = surname
+        self.gender = gender
+        self.finished_courses = []
+        self.courses_in_progress = []
+        self.grades = {}
+    def add_courses(self, course_name):
+        self.finished_course.append(course_name)
         
-class Lecturer(Mentor):
-    pass
+    def rate_hw(self, lecturer, course, grade):
+        if isinstance(lecturer, Mentor) and course in self.courses_attached and course in self.courses_in_progress and 0 <= grade <= 10:
+            if course in self.finished_courses:
+                lecturer.lecturergrades[course] += [grade]
+            else:
+                lecturer.lecturergrades[course] = [grade]
+        else:
+            return 'Ошибка'
+        
 
-class Reviewer(Mentor):
-    pass
 
 best_student = Student('Ruoy', 'Eman', 'your_gender')
 best_student.courses_in_progress += ['Python']
