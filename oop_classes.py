@@ -47,7 +47,7 @@ class Student:
     def __aver_student(self, grades):
         return round(sum(grades.values())/len(grades),1)
     def __str__(self):
-        res = f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.__aver_student(grades)}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses} "
-        return res
+        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.__aver_student(grades)}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses} "
+    
         
 
