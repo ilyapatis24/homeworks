@@ -5,10 +5,14 @@ class Mentor:
         self.courses_attached = []
         
 class Lecturer(Mentor):
-    global lecturergrades = {}
-    def __str__(self):
-        res = f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {round(sum(lecturergrades.values())/len(lecturergrades),1)}"
-        return res
+    def __init__(self, name, surname):
+        super().__init__(name,surname)
+        self.lecturergrades = {}     
+    def aver_lect(self,lecturergrades):
+        return round(sum(lecturergrades.values())/len(lecturergrades),1)
+    def __str__(self,lecturergrades):
+        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.aver_lect(lecturergrades)}"
+    
 class Reviewer(Mentor):
     def rate_hw(self, student, course, grade):
         if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
@@ -40,5 +44,10 @@ class Student:
                 lecturer.lecturergrades[course] = [grade]
         else:
             return 'Ошибка'
+    def aver_student(self, grades):
+        return round(sum(grades.values())/len(grades),1)
+    def __str__(self):
+        res = f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.student()}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses} "
+        return res
         
 
