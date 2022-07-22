@@ -4,27 +4,6 @@ class Mentor:
         self.surname = surname
         self.courses_attached = []
         
-class Lecturer(Mentor):
-    def __init__(self, name, surname):
-        super().__init__(name,surname)
-        self.lecturergrades = {}     
-    def __aver_lect(self,lecturergrades):
-        return round(sum(lecturergrades.values())/len(lecturergrades),1)
-    def __str__(self,lecturergrades):
-        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.__aver_lect(lecturergrades)}"
-    
-class Reviewer(Mentor):
-    def rate_hw(self, student, course, grade):
-        if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
-            if course in student.grades:
-                student.grades[course] += [grade]
-            else:
-                student.grades[course] = [grade]
-        else:
-            return 'Ошибка'
-    def __str__(self):
-        return f"Имя:{self.name}\nФамилия:{self.surname}"
-    
 class Student:
     def __init__(self, name, surname, gender):
         self.name = name
@@ -34,20 +13,67 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
     def add_courses(self, course_name):
-        self.finished_course.append(course_name)
+        self.finished_courses.append(course_name)
         
     def rate_hw(self, lecturer, course, grade):
-        if isinstance(lecturer, Mentor) and course in self.courses_attached and course in self.courses_in_progress and 0 <= grade <= 10:
-            if course in self.finished_courses:
-                lecturer.lecturergrades[course] += [grade]
+        marks = [0,1,2,3,4,5,6,7,8,9,10]
+        if isinstance(lecturer, Lecturer) and grade in marks:
+            if course in lecturer.grades:
+                lecturer.grades[course] += [grade]
             else:
-                lecturer.lecturergrades[course] = [grade]
+                lecturer.grades[course] = [grade]
         else:
             return 'Ошибка'
-    def __aver_student(self, grades):
+    def aver_student(self, grades):
         return round(sum(grades.values())/len(grades),1)
-    def __str__(self):
-        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.__aver_student(grades)}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses} "
+    def __str__(self,grades):
+        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.aver_student(grades)}\nКурсы в процессе изучения: {self.courses_in_progress}\nЗавершенные курсы: {self.finished_courses} "
+    def __lt__(self, other):
+        if self.aver_student() >= other.aver_student():
+            return
+        return self.aver_student() < other.aver_student()
     
-        
-
+class Lecturer(Mentor):
+    def __init__(self,name,surname):
+        super().__init__(name,surname)
+        self.grades = {}     
+    def aver_lect(self,lecturergrades):
+        return round(sum(lecturergrades.values())/len(lecturergrades),1)
+    def __str__(self,lecturergrades):
+        return f"Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции: {self.aver_lect(lecturergrades)}"
+    def __lt__(self, other):
+        if self.aver_lect() >= other.aver_lect():
+            return
+        return self.aver_lect() < other.aver_lect()
+class Reviewer(Mentor):
+    def rate_hw(self, student, course, grade):
+        if isinstance(student, Student):
+            if course in student.grades:
+                student.grades[course] += [grade]
+            else:
+                student.grades[course] = [grade]
+        else:
+            return 'Ошибка'
+            
+    def __str__(self):
+        return f"Имя:{self.name}\nФамилия:{self.surname}"
+    
+lecturer1 = Lecturer("Ivan", "Petrov")
+lecturer2 = Lecturer("Fedor", "Ivanov")
+reviewer1 = Reviewer("Sergey", "Sidorov")
+reviewer2 = Reviewer("Oleg", "Pavlov")
+student1 = Student("Olga", "Filina","female")
+student1.finished_courses = ["Sql", "Python"]
+student2 = Student("Evgeniy", "Markov", "male")
+student2.finished_courses = ["Php", "Golang"]  
+lecturer1.courses_attached = ["Sql", "Python"]
+lecturer2.courses_attached = ["Php", "Golang"]
+reviewer1.courses_attached = ["Sql", "Python"]
+reviewer2.courses_attached = ["Php", "Golang"]
+student1.rate_hw(lecturer1,"Sql",9)
+student1.rate_hw(lecturer1,"Python",9)
+reviewer1.rate_hw(student1, "Sql", 9)
+reviewer1.rate_hw(student1, "Python", 9)
+reviewer1.rate_hw(student1, "Python", 8)
+print(student1.grades)
+print(lecturer1.grades)
