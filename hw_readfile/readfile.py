@@ -1,9 +1,3 @@
-from asyncio import new_event_loop
-from hashlib import new
-from tokenize import cookie_re
-from types import new_class
-
-
 def my_cook_book():
     with open('cook.txt', encoding='utf-8') as file:
         cook_book = {}
@@ -20,9 +14,11 @@ def get_shop_list_by_dishes(dishes,person_count):
     new_cook = {}
     cook_book = my_cook_book()
     for dish in dishes:
-        for ingredient in cook_book[dish]:
-            new_cook[dish] = ingredient
-            new_cook[dish]['quantity'] *= person_count
+        if dish in cook_book:
+            for ingredient in cook_book[dish]:
+                ingredient['quantity'] *= person_count
+                new_cook.setdefault(ingredient['ingredient_name'], ingredient)
+   
     dic_dish = {}
     for value in new_cook.values():
         name = value['ingredient_name']
